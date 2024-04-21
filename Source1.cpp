@@ -6,7 +6,7 @@
 
 using namespace std;
 
-template <typename Type>
+template <typename T>
 class Matrix
 {
 private:
@@ -25,14 +25,14 @@ public:
 	{
 		rows = current_rows;
 		columns = current_columns;
-		matrix = vector <vector<Type>>(rows, vector<Type>(columns));
+		matrix = vector <vector<T>>(rows, vector<T>(columns));
 	}
 	//Const for reading matrix from file
 	Matrix(string filename)
 	{
 		ifstream fileinput(filename);
 		fileinput >> rows >> columns;
-		matrix = vector <vector<Type>>(rows, vector<Type>(columns));
+		matrix = vector <vector<T>>(rows, vector<T>(columns));
 		for (int i = 0; i < rows; ++i)
 			for (int j = 0; i < columns; ++j)
 				fileinput >> matrix[i][j];
@@ -69,7 +69,7 @@ public:
 		{
 			for (int j = 0; j < other.columns; ++j)
 			{
-				Type value = 0;
+				T value = 0;
 				for (int l = 0; l < columns; ++l)
 					value += matrix[i][l] * other.matrix[l][j];
 				result.matrix[i][j] = value;
@@ -110,18 +110,92 @@ public:
 	friend istream& operator>>(istream& input, Maxtrix& other)
 	{
 		int volume = other.rows * other.columns;
-		cout << "Valume of current matrix: " << volume << endl;
+		cout << "Volume of current matrix: " << volume << endl;
 		for (int i = 0; i < other.rows; ++i)
 			for (int j = 0; j < other.columns; ++j)
 				input >> other.matrix[i][j];
 		return input;
 	}
 	//Operator "!" for obratnaya matrix
-	Matrix<Type> operator!()
+	Matrix<double> operator!()
 	{
 		if (this->rows != this->columns)
 			throw invalid_argument("Error: matrix is not square (!)");
-		int n = this->rows;
+		int length = this->rows; //Pripishem* k ishodnoi matrice edinichnuyu v vide vektora is vektorov
+		vector<vector<double>> dopolnMatrix(n, vector<double>(n * 2, 0.0));
+		for (int i = 0; i < length; ++i)
+		{
+			dopolnMatrix[i][i + length] = 1.0;
+			for (int j = 0; j < n; j++)
+				dopolnMatrix[i][j] = this->matrix[i][j]
+		}
+		for (int i = 0; i < n; ++i)
+		{
+			if (dopolnMatrix[i][i] == 0)
+				throw invalid_argument("Error: there is no obratnaya matrix");
+			double temp = dopolnMatrix[i][i];
+			for (int j = 0; j < 2 * length; ++j)
+				dopolnMatrix[i][j] = dopolnMatrix[i][j] / temp;
+			for (int l = 0; l < length; ++l)
+				if (l != i)
+				{
+					double m = dopolnMatrix[l][i];
+					for (int f = 0; f < 2 * length; ++f)
+						dopolnMatrix[l][f] -= dopolnMatrix[i][f] * m;
+				}
+		}
+
+		vector<vector<double>> obratn(n, vector<double>(n, 0));
+		for (int i = 0; i < length; ++i)
+			for (int j = 0; j < length; ++j)
+				obratn[i][j] = dopolnMatrix[i][j + n];
+		return obratn;
+	}
+	// Input from file
+	void inputMatrixFile(string fileinput)
+	{
+		ifstream input(fileinput);
+		input >> rows >> columns;
+		matrix = vector<vector<T>>(rows, vector<T>(columns));
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < columns; ++j)
+				input >> matrix[i][j];
+		input.close();
+	}
+	// Output from file
+	void printMatrixFile(string fileoutput)
+	{
+		ofstream output(fileoutput);
+		for (int i = 0; i < rows; ++i)
+		{
+			for (int j = 0; j < columns; ++j)
+				output << matrix[i][j] << " ";
+			output << endl;
+		}
+		output.close();
+	}
+	// Uno matrix
+	static Matrix unoMatrix(int rows)
+	{
+		Matrix uno(rows, rows);
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < rows; ++j)
+			{
+				if (i == j)
+					uno[i][j] = 1;
+				else
+					uno[i][j] = 0;
+			}
+		return uno;
+	}
+	// Zero matrix
+	static Matrix unoMatrix(int rows)
+	{
+		Matrix zero(rows, rows);
+		for (int i = 0; i < rows; ++i)
+			for (int j = 0; j < rows; ++j)
+				zero[i][j] = 0;
+		return zero;
 	}
 };
 
