@@ -38,7 +38,7 @@ public:
 				fileinput >> matrix[i][j];
 	}
 	//Operator "+"
-	Matrix operator+(const Matrix$ other)
+	Matrix operator+(const Matrix& other)
 	{
 		if ((rows != other.rows) or (columns != other.columns))
 			throw invalid_argument("Error: diff sizes of matrices (+)");
@@ -49,7 +49,7 @@ public:
 		return result;
 	}
 	//Operator "-"
-	Matrix operator-(const Matrix$ other)
+	Matrix operator-(const Matrix& other)
 	{
 		if ((rows != other.rows) or (columns != other.columns))
 			throw invalid_argument("Error: diff sizes of matrices (-)");
@@ -96,7 +96,7 @@ public:
 		this->matrix = other.matrix;
 	}
 	//Operator for output matrix to console
-	friend ostream& operator<<(ostream& output, const Matrix* other)
+	friend ostream& operator<<(ostream& output, const Matrix& other)
 	{
 		for (auto row : other.matrix)
 		{
@@ -107,7 +107,7 @@ public:
 		return output;
 	}
 	//Operator for input matrix from console
-	friend istream& operator>>(istream& input, Maxtrix& other)
+	friend istream& operator>>(istream& input, Matrix& other)
 	{
 		int volume = other.rows * other.columns;
 		cout << "Volume of current matrix: " << volume << endl;
@@ -122,14 +122,14 @@ public:
 		if (this->rows != this->columns)
 			throw invalid_argument("Error: matrix is not square (!)");
 		int length = this->rows; //Pripishem* k ishodnoi matrice edinichnuyu v vide vektora is vektorov
-		vector<vector<double>> dopolnMatrix(n, vector<double>(n * 2, 0.0));
+		vector<vector<double>> dopolnMatrix(length, vector<double>(length * 2, 0.0));
 		for (int i = 0; i < length; ++i)
 		{
 			dopolnMatrix[i][i + length] = 1.0;
-			for (int j = 0; j < n; j++)
+			for (int j = 0; j < length; j++)
 				dopolnMatrix[i][j] = this->matrix[i][j]
 		}
-		for (int i = 0; i < n; ++i)
+		for (int i = 0; i < length; ++i)
 		{
 			if (dopolnMatrix[i][i] == 0)
 				throw invalid_argument("Error: there is no obratnaya matrix");
@@ -145,10 +145,10 @@ public:
 				}
 		}
 
-		vector<vector<double>> obratn(n, vector<double>(n, 0));
+		vector<vector<double>> obratn(n, vector<double>(length, 0));
 		for (int i = 0; i < length; ++i)
 			for (int j = 0; j < length; ++j)
-				obratn[i][j] = dopolnMatrix[i][j + n];
+				obratn[i][j] = dopolnMatrix[i][j + length];
 		return obratn;
 	}
 	// Input from file
@@ -177,24 +177,15 @@ public:
 	// Uno matrix
 	static Matrix unoMatrix(int rows)
 	{
-		Matrix uno(rows, rows);
+		vector<vector<T>> uno = vector<vector<T>>(rows, vector<T>(rows, 0));
 		for (int i = 0; i < rows; ++i)
-			for (int j = 0; j < rows; ++j)
-			{
-				if (i == j)
-					uno[i][j] = 1;
-				else
-					uno[i][j] = 0;
-			}
+			uno[i][i] = 1;
 		return uno;
 	}
 	// Zero matrix
-	static Matrix unoMatrix(int rows)
+	static Matrix zeroMatrix(int rows, int columns)
 	{
-		Matrix zero(rows, rows);
-		for (int i = 0; i < rows; ++i)
-			for (int j = 0; j < rows; ++j)
-				zero[i][j] = 0;
+		Matrix zero = vector<vector<T>>(rows, vector<T>(columns));
 		return zero;
 	}
 };
@@ -204,4 +195,6 @@ int main()
 {
 	Matrix<int> intMatrix(3, 3);
 	cin >> intMatrix;
+	cout << Matrix<int>::zeroMatrix(3, 3) << endl;
+	cout << Matrix<int>::unoMatrix(3) << endl;
 }
