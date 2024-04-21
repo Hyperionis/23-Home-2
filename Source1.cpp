@@ -14,20 +14,20 @@ private:
 	int columns;
 	vector <vector<T>> matrix;
 public:
-	// Пустой конструктор
+	// Empty const
 	Matrix()
 	{
 		rows = 0;
 		columns = 0;
 	}
-	//Конструктор заданного размера
+	//Const of known size
 	Matrix(int current_rows, int current_columns)
 	{
 		rows = current_rows;
 		columns = current_columns;
 		matrix = vector <vector<Type>>(rows, vector<Type>(columns));
 	}
-	//Конструктор для считывания матрицы из файла
+	//Const for reading matrix from file
 	Matrix(string filename)
 	{
 		ifstream fileinput(filename);
@@ -37,7 +37,7 @@ public:
 			for (int j = 0; i < columns; ++j)
 				fileinput >> matrix[i][j];
 	}
-	//Перегрузка "+"
+	//Operator "+"
 	Matrix operator+(const Matrix$ other)
 	{
 		if ((rows != other.rows) or (columns != other.columns))
@@ -48,7 +48,7 @@ public:
 				result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
 		return result;
 	}
-	//Перегрузка "-"
+	//Operator "-"
 	Matrix operator-(const Matrix$ other)
 	{
 		if ((rows != other.rows) or (columns != other.columns))
@@ -59,7 +59,7 @@ public:
 				result.matrix[i][j] = matrix[i][j] - other.matrix[i][j];
 		return result;
 	}
-	//Перегрузка "*" для матриц
+	//Operator "*" for matrices
 	Matrix operator*(const Matrix& other)
 	{
 		if ((rows != other.rows) or (columns != other.columns))
@@ -77,7 +77,7 @@ public:
 		}
 		return result;
 	}
-	//Перегрузка оператора "*" для скаляра
+	//Operator "*" for scalar
 	Matrix operator*(int scalar)
 	{
 		Matrix result(rows, columns);
@@ -86,7 +86,7 @@ public:
 				result.matrix[i][j] = matrix[i][j] * scalar;
 		return result;
 	}
-	//Перегрузка оператора присваивания
+	//Operator "="
 	Matrix operator=(const Matrix& other)
 	{
 		if ((rows != other.rows) or (columns != other.columns))
@@ -95,7 +95,7 @@ public:
 		this->columns = other.columns;
 		this->matrix = other.matrix;
 	}
-	//Перегрузка вывода матрицы в консоль
+	//Operator for output matrix to console
 	friend ostream& operator<<(ostream& output, const Matrix* other)
 	{
 		for (auto row : other.matrix)
@@ -106,7 +106,7 @@ public:
 		}
 		return output;
 	}
-	//Перегрузка ввода матрицы через консоль
+	//Operator for input matrix from console
 	friend istream& operator>>(istream& input, Maxtrix& other)
 	{
 		int volume = other.rows * other.columns;
@@ -116,7 +116,7 @@ public:
 				input >> other.matrix[i][j];
 		return input;
 	}
-	//Перегрузка "!" для нахождения обратной матрицы
+	//Operator "!" for obratnaya matrix
 	Matrix<Type> operator!()
 	{
 		if (this->rows != this->columns)
